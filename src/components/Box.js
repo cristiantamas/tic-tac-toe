@@ -4,7 +4,7 @@ import React from 'react';
 function Box(props){
     return(
         <div style = {boxStyle}
-                onClick = {() => props.handleClick(props.item.id)}> {props.item.value} </div>
+            onClick = {() => props.handleClick(props.item.id)}> {props.item.value} </div>
     )
 }
 

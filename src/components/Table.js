@@ -15,29 +15,85 @@ class Table extends React.Component{
         this.checkTable = this.checkTable.bind(this)
     }
 
-    checkTable(id){
-       /* var winningValue = '';
-        var x = this.state.boxList[id].x;
-        var y = this.state.boxList[id].y;*/
+    checkTable(){
+        var winningValue = '';
+
+        /* Check the lines and rows*/
+        for(var i = 0; i < 3; i++){
+            var box1 = this.state.boxList.find(x=> x.id[0] == i && x.id[1] == 0);
+            var box2 = this.state.boxList.find(x=> x.id[0] == i && x.id[1] == 1);
+            var box3 = this.state.boxList.find(x=> x.id[0] == i && x.id[1] == 2);
+
+            /* Check the line */
+            if(box1.value != '' && box1.value === box2.value && box1.value === box3.value){
+                winningValue = box1.value + "wins!";
+            }
+
+            /* Check the column*/
+            var box1 = this.state.boxList.find(x=> x.id[0] == 0 && x.id[1] == i);
+            var box2 = this.state.boxList.find(x=> x.id[0] == 1 && x.id[1] == i);
+            var box3 = this.state.boxList.find(x=> x.id[0] == 2 && x.id[1] == i);
+
+            if(box1.value != '' && box1.value === box2.value && box1.value === box3.value){
+                winningValue = box1.value + "wins!";
+            }
+        }
+
+
+
+        /* Check main diagonal*/
+        if (winningValue === ''){
+            var box1 = this.state.boxList.find(x=> x.id[0] == 0 && x.id[1] == 0);
+            var box2 = this.state.boxList.find(x=> x.id[0] == 1 && x.id[1] == 1);
+            var box3 = this.state.boxList.find(x=> x.id[0] == 2 && x.id[1] == 2);
+
+            if(box1.value != '' && box1.value === box2.value && box1.value === box3.value){
+                winningValue = box1.value + "wins!";
+            }
+
+        }
+
+        /* Check secondary diagonal*/
+        if (winningValue === ''){
+            var box1 = this.state.boxList.find(x=> x.id[0] == 0 && x.id[1] == 2);
+            var box2 = this.state.boxList.find(x=> x.id[0] == 1 && x.id[1] == 1);
+            var box3 = this.state.boxList.find(x=> x.id[0] == 2 && x.id[1] == 0);
+
+            if(box1.value != '' && box1.value === box2.value && box1.value === box3.value){
+                winningValue = box1.value + "wins!";
+            }
+        }
+        
+        if (winningValue ==''){
+            winningValue = 'Draw!';
+            this.state.boxList.forEach(item => {
+                if(item.value == '')
+                    winningValue = '';
+            })
+        }
+
+        if (winningValue != ''){
+            alert(winningValue);
+        }
     }
 
 
     handleClick(id){
-        console.log("id: ", id);
+        /* Update state and board*/
         this.setState(prevState => {
             const list = prevState.boxList.map( item => {
-              if (item.id === id){
-                if (item.value === ''){
+              if (item.id[0] == id[0] && item.id[1] == id[1]){
+                if (item.value == ''){
                     item.value = prevState.currentMove
                 }
                 else{
-                    console.log(item.value)
                     alert("Cannot change this box")
                 }
               }
               return item
             })
 
+            /* Update move */
             var move = '';
             if (prevState.currentMove === 'X'){
                 move = '0'
@@ -45,30 +101,28 @@ class Table extends React.Component{
             else{
                 move = 'X'
             }
-      
+        
             return {
-              boxList: list,
-              currentMove: move
+                boxList: list,
+                currentMove: move
             }
-          })
-
-
+        });
     }
 
     componentDidMount(){
         this.setState({currentMove : 'X'});
     }
 
+    componentDidUpdate(){
+        this.checkTable();
+    }
 
     render(){
         var list= [];
 
-        boxList.forEach(row =>{
-            console.log("row: ", row)
-            list.push(row.map( item => <Box key = {item.id}
-                item = {item}
-                handleClick = {this.handleClick}/>))
-        })
+        boxList.forEach(item => list.push( <Box key = {item.id}
+                                                item = {item}
+                                                handleClick = {this.handleClick}/>))
         return(
             <div style={tableStyle}>
                 {list}
